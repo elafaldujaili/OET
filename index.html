@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Word List App</title>
+  <style>
+    body {
+      background: #0f172a;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: #1e293b;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+    #searchBar {
+      width: 50%;
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: none;
+    }
+    #favoritesBtn {
+      background: #3b82f6;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      color: white;
+    }
+    .word-list {
+      padding: 1rem;
+    }
+    .word-card {
+      background: #1e293b;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .word-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .word-header span {
+      font-weight: bold;
+      font-size: 1rem;
+    }
+    .actions button {
+      margin-left: 0.5rem;
+      cursor: pointer;
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      border: none;
+    }
+    .fav {
+      background: gold;
+      color: black;
+    }
+    .translate-box {
+      margin-top: 0.5rem;
+      background: #334155;
+      padding: 0.6rem;
+      border-radius: 6px;
+      font-style: italic;
+      color: #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Word List</h1>
+    <input type="text" id="searchBar" placeholder="Search words...">
+    <button id="favoritesBtn">⭐ Favorites</button>
+  </header>
+
+  <main class="word-list" id="wordList"></main>
+
+  <script>
+    let words = [];
+    let favorites = [];
+
+    const wordList = document.getElementById("wordList");
+    const searchBar = document.getElementById("searchBar");
+    const favoritesBtn = document.getElementById("favoritesBtn");
+
+    async function loadWords() {
+      const res = await fetch("words.json");
+      words = await res.json();
+      renderWords(words);
+    }
+
+    function renderWords(list) {
+      wordList.innerHTML = "";
+      list.forEach((item, index) => {
+        const card = document.createElement("div");
+        card.className = "word-card";
+        card.innerHTML = `
+          <div class="word-header">
+            <span>${item.id}. <strong>${item.word}</strong></span>
+            <div class="actions">
+              <button onclick="speak('${item.word}')">🔊</button>
+              <button onclick="toggleFavorite('${item.word}')" class="${favorites.includes(item.word) ? 'fav' : ''}">⭐</button>
+              <button onclick="translateWord(this, '${item.translation}')">Translate</button>
+            </div>
+          </div>
+          <div>"${item.sentence}"</div>
+        `;
+        wordList.appendChild(card);
+      });
+    }
+
+    function speak(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      speechSynthesis.speak(utterance);
+    }
+
+    function toggleFavorite(word) {
+      if (favorites.includes(word)) {
+        favorites = favorites.filter(fav => fav !== word);
+      } else {
+        favorites.push(word);
+      }
+      filterAndRender();
+    }
+
+    function translateWord(button, translation) {
+      const card = button.closest(".word-card");
+      let box = card.querySelector(".translate-box");
+
+      if (box) {
+        box.remove();
+        button.textContent = "Translate";
+      } else {
+        box = document.createElement("div");
+        box.className = "translate-box";
+        box.textContent = translation;
+        card.appendChild(box);
+        button.textContent = "Hide";
+      }
+    }
+
+    function filterAndRender() {
+      const query = searchBar.value.toLowerCase();
+      let filtered = words.filter(w => w.word.toLowerCase().includes(query));
+      renderWords(filtered);
+    }
+
+    searchBar.addEventListener("input", filterAndRender);
+
+    favoritesBtn.addEventListener("click", () => {
+      const filtered = words.filter(w => favorites.includes(w.word));
+      renderWords(filtered);
+    });
+
+    loadWords();
+  </script>
+</body>
+</html>
