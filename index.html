@@ -2,169 +2,174 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Word List App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medical Terms Translations</title>
   <style>
-    body {
-      background: #0f172a;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem;
-      background: #1e293b;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 1.2rem;
-    }
-    #searchBar {
-      width: 50%;
-      padding: 0.5rem;
-      border-radius: 6px;
-      border: none;
-    }
-    #favoritesBtn {
-      background: #3b82f6;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      color: white;
-    }
-    .word-list {
-      padding: 1rem;
-    }
-    .word-card {
-      background: #1e293b;
-      border-radius: 10px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .word-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .word-header span {
-      font-weight: bold;
-      font-size: 1rem;
-    }
-    .actions button {
-      margin-left: 0.5rem;
-      cursor: pointer;
-      padding: 0.3rem 0.6rem;
-      border-radius: 6px;
-      border: none;
-    }
-    .fav {
-      background: gold;
-      color: black;
-    }
-    .translate-box {
-      margin-top: 0.5rem;
-      background: #334155;
-      padding: 0.6rem;
-      border-radius: 6px;
-      font-style: italic;
-      color: #e2e8f0;
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .entry { margin-bottom: 15px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+    .number { font-weight: bold; }
+    .term { font-size: 1.2em; margin-top: 5px; }
+    .sentence { font-style: italic; margin-top: 2px; }
+    .translate { color: blue; cursor: pointer; text-decoration: underline; margin-top: 2px; }
+    .translation { display: none; color: green; margin-top: 2px; }
   </style>
+  <script>
+    function toggleTranslation(element) {
+      var translation = element.nextElementSibling;
+      if (translation.style.display === "none") {
+        translation.style.display = "block";
+      } else {
+        translation.style.display = "none";
+      }
+    }
+  </script>
 </head>
 <body>
-  <header>
-    <h1>Word List</h1>
-    <input type="text" id="searchBar" placeholder="Search words...">
-    <button id="favoritesBtn">⭐ Favorites</button>
-  </header>
+  <h1>Medical Terms Translations (English → Arabic)</h1>
 
-  <main class="word-list" id="wordList"></main>
+  <div class="entry">
+    <div class="number">1.</div>
+    <div class="term">haemophilia</div>
+    <div class="sentence">“My cousin has haemophilia.”</div>
+    <div class="translate" onclick="toggleTranslation(this)">Translate</div>
+    <div class="translation">الهيموفيليا</div>
+  </div>
 
-  <script>
-    let words = [];
-    let favorites = [];
+  <div class="entry">
+    <div class="number">2.</div>
+    <div class="term">apricot</div>
+    <div class="sentence">“Apricot jam upsets my stomach.”</div>
+    <div class="translate" onclick="toggleTranslation(this)">Translate</div>
+    <div class="translation">مشمش</div>
+  </div>
 
-    const wordList = document.getElementById("wordList");
-    const searchBar = document.getElementById("searchBar");
-    const favoritesBtn = document.getElementById("favoritesBtn");
+  <div class="entry">
+    <div class="number">3.</div>
+    <div class="term">skin prick testing</div>
+    <div class="sentence">“They booked skin prick testing for allergies.”</div>
+    <div class="translate" onclick="toggleTranslation(this)">Translate</div>
+    <div class="translation">اختبار وخز الجلد</div>
+  </div>
 
-    async function loadWords() {
-      const res = await fetch("words.json");
-      words = await res.json();
-      renderWords(words);
-    }
+  <div class="entry">
+    <div class="number">4.</div>
+    <div class="term">stethoscope</div>
+    <div class="sentence">“The doctor used a stethoscope to listen to my chest.”</div>
+    <div class="translate" onclick="toggleTranslation(this)">Translate</div>
+    <div class="translation">سماعة طبية</div>
+  </div>
 
-    function renderWords(list) {
-      wordList.innerHTML = "";
-      list.forEach((item, index) => {
-        const card = document.createElement("div");
-        card.className = "word-card";
-        card.innerHTML = `
-          <div class="word-header">
-            <span>${item.id}. <strong>${item.word}</strong></span>
-            <div class="actions">
-              <button onclick="speak('${item.word}')">🔊</button>
-              <button onclick="toggleFavorite('${item.word}')" class="${favorites.includes(item.word) ? 'fav' : ''}">⭐</button>
-              <button onclick="translateWord(this, '${item.translation}')">Translate</button>
-            </div>
-          </div>
-          <div>"${item.sentence}"</div>
-        `;
-        wordList.appendChild(card);
-      });
-    }
+  <div class="entry">
+    <div class="number">5.</div>
+    <div class="term">allergy</div>
+    <div class="sentence">“I have an allergy to pollen.”</div>
+    <div class="translate" onclick="toggleTranslation(this)">Translate</div>
+    <div class="translation">حساسية</div>
+  </div>
 
-    function speak(text) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      speechSynthesis.speak(utterance);
-    }
+  <div class="entry">
+    <div class="number">6.</div>
+    <div class="term">blood pressure</div>
+    <div class="sentence">“My blood pressure is 120 over 80.”</div>
+    <div class="translate" onclick="toggleTranslation(this)">Translate</div>
+    <div class="translation">ضغط الدم</div>
+  </div>
 
-    function toggleFavorite(word) {
-      if (favorites.includes(word)) {
-        favorites = favorites.filter(fav => fav !== word);
-      } else {
-        favorites.push(word);
-      }
-      filterAndRender();
-    }
+  <div class="entry">
+    <div class="number">7.</div>
+    <div class="term">cholesterol</div>
+    <div class="sentence">“My cholesterol levels are high.”</div>
+    <div class="translate" onclick="toggleTranslation(this)">Translate</div>
+    <div class="translation">كوليسترول</div>
+  </div>
 
-    function translateWord(button, translation) {
-      const card = button.closest(".word-card");
-      let box = card.querySelector(".translate-box");
+  <div class="entry">
+    <div class="number">8.</div>
+    <div class="term">diabetes</div>
+    <div class="sentence">“She was diagnosed with diabetes last year.”</div>
+    <div class="translate" onclick="toggleTranslation(this)">Translate</div>
+    <div class="translation">سكري</div>
+  </div>
 
-      if (box) {
-        box.remove();
-        button.textContent = "Translate";
-      } else {
-        box = document.createElement("div");
-        box.className = "translate-box";
-        box.textContent = translation;
-        card.appendChild(box);
-        button.textContent = "Hide";
-      }
-    }
+  <div class="entry">
+    <div class="number">9.</div>
+    <div class="term">eczema</div>
+    <div class="sentence">“Eczema causes my skin to itch.”</div>
+    <div class="translate" onclick="toggleTranslation(this)">Translate</div>
+    <div class="translation">إكزيما</div>
+  </div>
 
-    function filterAndRender() {
-      const query = searchBar.value.toLowerCase();
-      let filtered = words.filter(w => w.word.toLowerCase().includes(query));
-      renderWords(filtered);
-    }
+  <div class="entry">
+    <div class="number">10.</div>
+    <div class="term">fever</div>
+    <div class="sentence">“He has a fever of 38.5°C.”</div>
+    <div class="translate" onclick="toggleTranslation(this)">Translate</div>
+    <div class="translation">حمى</div>
+  </div>
 
-    searchBar.addEventListener("input", filterAndRender);
+  <div class="entry">
+    <div class="number">11.</div>
+    <div class="term">gastroenteritis</div>
+    <div class="sentence">“Gastroenteritis caused my stomach cramps.”</div>
+    <div class="translate" onclick="toggleTranslation(this)">Translate</div>
+    <div class="translation">التهاب المعدة والأمعاء</div>
+  </div>
 
-    favoritesBtn.addEventListener("click", () => {
-      const filtered = words.filter(w => favorites.includes(w.word));
-      renderWords(filtered);
-    });
+  <div class="entry">
+    <div class="number">12.</div>
+    <div class="term">headache</div>
+    <div class="sentence">“I have a headache after working on the computer.”</div>
+    <div class="translate" onclick="toggleTranslation(this)">Translate</div>
+    <div class="translation">صداع</div>
+  </div>
 
-    loadWords();
-  </script>
-</body>
-</html>
+  <div class="entry">
+    <div class="number">13.</div>
+    <div class="term">inflammation</div>
+    <div class="sentence">“The wound showed signs of inflammation.”</div>
+    <div class="translate" onclick="toggleTranslation(this)">Translate</div>
+    <div class="translation">التهاب</div>
+  </div>
+
+  <div class="entry">
+    <div class="number">14.</div>
+    <div class="term">jaundice</div>
+    <div class="sentence">“Jaundice caused his skin to turn yellow.”</div>
+    <div class="translate" onclick="toggleTranslation(this)">Translate</div>
+    <div class="translation">يرقان</div>
+  </div>
+
+  <div class="entry">
+    <div class="number">15.</div>
+    <div class="term">knee brace</div>
+    <div class="sentence">“She wears a knee brace after surgery.”</div>
+    <div class="translate" onclick="toggleTranslation(this)">Translate</div>
+    <div class="translation">دعامة الركبة</div>
+  </div>
+
+  <div class="entry">
+    <div class="number">16.</div>
+    <div class="term">lactose intolerance</div>
+    <div class="sentence">“Lactose intolerance causes digestive issues.”</div>
+    <div class="translate" onclick="toggleTranslation(this)">Translate</div>
+    <div class="translation">عدم تحمل اللاكتوز</div>
+  </div>
+
+  <div class="entry">
+    <div class="number">17.</div>
+    <div class="term">migraine</div>
+    <div class="sentence">“She suffers from chronic migraines.”</div>
+    <div class="translate" onclick="toggleTranslation(this)">Translate</div>
+    <div class="translation">صداع نصفي</div>
+  </div>
+
+  <div class="entry">
+    <div class="number">18.</div>
+    <div class="term">nausea</div>
+    <div class="sentence">“Nausea followed the medication.”</div>
+    <div class="translate" onclick="toggleTranslation(this)">Translate</div>
+    <div class="translation">غثيان</div>
+  </div>
+
+  <div class="entry">
+    <div class="numb
